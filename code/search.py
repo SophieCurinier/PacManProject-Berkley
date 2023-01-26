@@ -188,6 +188,33 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     """
         INSÉREZ VOTRE SOLUTION À LA QUESTION 4 ICI
     """
+    # Frontier, priority queue, with the nodes to explore associated with actions needed to reach that node from intial node.
+    frontier = util.PriorityQueue()
+    exploredNodes = []
+    # Initial position (node)
+    startNode = problem.getStartState()
+    nodeActionFromStartState = []
+    #heuristic value
+    heuristicValue = 0
+    if heuristic(startNode,problem) is not None:
+        heuristicValue = heuristic(startNode,problem)
+    evaluationFunction = 0 + heuristicValue
+
+    frontier.update((startNode, [], 0),evaluationFunction)
+    while not frontier.isEmpty():
+        node, nodeActionFromStartState, costFromStartState = frontier.pop()
+        if node not in exploredNodes:
+            exploredNodes.append(node)
+            if problem.isGoalState(node):
+                return nodeActionFromStartState
+            else:
+                successors = problem.getSuccessors(node)
+                for successorNode, sucessorAction, sucessorStepCost in successors:
+                    if heuristic(successorNode,problem) is not None:
+                        heuristicValue = heuristic(successorNode,problem)
+                    evaluationFunction = sucessorStepCost + costFromStartState + heuristicValue
+                    frontier.update((successorNode, nodeActionFromStartState+[sucessorAction], sucessorStepCost + costFromStartState),evaluationFunction)
+    return nodeActionFromStartState
 
 
 
