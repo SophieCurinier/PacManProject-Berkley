@@ -122,7 +122,7 @@ def breadthFirstSearch(problem):
     """
         INSÉREZ VOTRE SOLUTION À LA QUESTION 2 ICI
     """
-    # Frontier, stack (LIFO), with the nodes to explore associated with actions needed to reach that node from intial node.
+    # Frontier, queue (FIFO), with the nodes to explore associated with actions needed to reach that node from intial node.
     frontier = util.Queue()
     exploredNodes = []
     # Initial position (node)
@@ -153,6 +153,26 @@ def uniformCostSearch(problem):
     """
         INSÉREZ VOTRE SOLUTION À LA QUESTION 3 ICI
     """
+    # Frontier, priority queue, with the nodes to explore associated with actions needed to reach that node from intial node.
+    frontier = util.PriorityQueue()
+    exploredNodes = []
+    # Initial position (node)
+    startNode = problem.getStartState()
+    nodeActionFromStartState = []
+
+    # Add root node in frontier with 0 as priority and 0 as cost
+    frontier.update((startNode, [], 0),0)
+    while not frontier.isEmpty():
+        node, nodeActionFromStartState, costFromStartState = frontier.pop()
+        if node not in exploredNodes:
+            exploredNodes.append(node)
+            if problem.isGoalState(node):
+                return nodeActionFromStartState
+            else:
+                successors = problem.getSuccessors(node)
+                for successorNode, sucessorAction, sucessorStepCost in successors:
+                    frontier.update((successorNode, nodeActionFromStartState+[sucessorAction], sucessorStepCost + costFromStartState),sucessorStepCost + costFromStartState)
+    return nodeActionFromStartState
 
 
 def nullHeuristic(state, problem=None):
