@@ -93,6 +93,27 @@ def depthFirstSearch(problem):
     """
         INSÉREZ VOTRE SOLUTION À LA QUESTION 1 ICI
     """
+    # Frontier, stack (LIFO), with the nodes to explore associated with actions needed to reach that node from intial node.
+    frontier = util.Stack()
+    exploredNodes = []
+    nodeActionFromStartState = []
+    # Initial position (node)
+    startNode = problem.getStartState()
+
+    frontier.push((startNode, []))    
+    while not frontier.isEmpty():
+        node, nodeActionFromStartState = frontier.pop()
+        if node not in exploredNodes:
+            exploredNodes.append(node)
+            # If goal node is encourted, research algorithm is stopped and actions since intial node are sent
+            if problem.isGoalState(node):
+                return nodeActionFromStartState
+            # Else add successor nodes and their actions to frontier.
+            else:
+                successors = problem.getSuccessors(node)
+                for successorNode, sucessorAction, sucessorStepCost in successors:
+                    frontier.push((successorNode, nodeActionFromStartState+[sucessorAction]))
+    return nodeActionFromStartState
 
 
 def breadthFirstSearch(problem):
