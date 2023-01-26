@@ -122,6 +122,29 @@ def breadthFirstSearch(problem):
     """
         INSÉREZ VOTRE SOLUTION À LA QUESTION 2 ICI
     """
+    # Frontier, stack (LIFO), with the nodes to explore associated with actions needed to reach that node from intial node.
+    frontier = util.Queue()
+    exploredNodes = []
+    # Initial position (node)
+    startNode = problem.getStartState()
+    nodeActionFromStartState = []
+    
+    # Add root node in frontier
+    frontier.push((startNode, []))
+    while not frontier.isEmpty():
+        node, nodeActionFromStartState = frontier.pop()
+        if node not in exploredNodes:
+            exploredNodes.append(node)\
+            # If goal node is encourted, research algorithm is stopped and actions since intial node are sent
+            if problem.isGoalState(node):
+                return nodeActionFromStartState
+            # Else add successor nodes and their actions to frontier.
+            else:
+                successors = problem.getSuccessors(node)
+                for successorNode, sucessorAction, sucessorStepCost in successors:
+                    frontier.push((successorNode, nodeActionFromStartState+[sucessorAction]))
+    return nodeActionFromStartState
+
 
 
 def uniformCostSearch(problem):
