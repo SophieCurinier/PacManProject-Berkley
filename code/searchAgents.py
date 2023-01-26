@@ -345,6 +345,17 @@ class CornersProblem(search.SearchProblem):
         """
             INSÉREZ VOTRE SOLUTION À LA QUESTION 5 ICI
         """
+        self.startingGameState = startingGameState
+        cornersVisited = [False, False, False, False]
+
+        for i in range(4):
+            if self.corners[i] == self.startingPosition:
+                cornersVisited[i] = True
+        
+        self.start = (
+            self.startingPosition,
+            tuple(cornersVisited)
+        )
 
     def _set_corner_values(self, state):
         try:
@@ -366,7 +377,7 @@ class CornersProblem(search.SearchProblem):
         """
             INSÉREZ VOTRE SOLUTION À LA QUESTION 5 ICI
         """
-        pass
+        return self.start
 
     def isGoalState(self, state):
         """
@@ -376,7 +387,13 @@ class CornersProblem(search.SearchProblem):
         """
             INSÉREZ VOTRE SOLUTION À LA QUESTION 5 ICI
         """
-        pass
+        cornersVisited = state[1]
+        # Boolean to say if all corners are visited
+        areVisited = True
+        for i in range(4):
+            if not cornersVisited[i]:
+                areVisited = False
+        return areVisited
 
     def getSuccessors(self, state):
         """
@@ -406,7 +423,16 @@ class CornersProblem(search.SearchProblem):
             """
             INSÉREZ VOTRE SOLUTION À LA QUESTION 5 ICI
             """
-            pass
+            (x, y) = state[0]
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+            if not hitsWall:
+                cornersVisited = list(state[1])
+                for i in range(4):
+                    if self.corners[i] == (nextx, nexty):
+                        cornersVisited[i] = True
+                successors.append((((nextx, nexty), cornersVisited), action, 1))
         
         self._expanded += 1  # DO NOT CHANGE
         return successors
