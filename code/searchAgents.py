@@ -472,7 +472,23 @@ def cornersHeuristic(state, problem):
     """
         INSÉREZ VOTRE SOLUTION À LA QUESTION 6 ICI
     """
-    return 0
+    heuristic = 0
+    stateLocation = state[0]
+
+    if problem.isGoalState(state):
+        heuristic = 0
+    else:
+        # List with all manhattan distance between state location and unvisited corners
+        distancesFromUnvisitedCorners = []
+        
+        for index,visitedCorner in enumerate(state[1]):
+            # If corner is unvisited, had manhattan distance from its and corners
+            if not visitedCorner: 
+                distancesFromUnvisitedCorners.append(util.manhattanDistance(stateLocation,corners[index]))
+        # The Manhattan distance is the minimum distance to travel since we are in a labyrinth.
+        # Heuristic is optimist.
+        heuristic = max(distancesFromUnvisitedCorners)
+    return heuristic
 
 
 class AStarCornersAgent(SearchAgent):
