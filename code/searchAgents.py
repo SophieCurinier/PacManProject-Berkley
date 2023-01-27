@@ -600,5 +600,39 @@ def foodHeuristic(state, problem: FoodSearchProblem):
     """
         INSÉREZ VOTRE SOLUTION À LA QUESTION 7 ICI
     """
+    foodL = foodGrid.asList()
+    problem.heuristicInfo['wallCount'] = problem.walls.count()
+    heuristic = 0
 
-    pass
+    if problem.isGoalState(state):
+        return heuristic
+    # Find real distances between position and all of the food
+    distance = []
+    flag = 0
+
+    for item in foodL:
+        distance.append(mazeDistance(position,item,problem.startingGameState))
+        # If we have a difficult maze stop search
+        if flag == 4 and problem.heuristicInfo['wallCount'] > 20:
+            break
+
+        flag += 1
+        heuristic = max(distance)
+
+    return heuristic
+
+def mazeDistance(point1, point2, gameState):
+    """
+    Returns the maze distance between any two points, using the search functions
+    you have already built. The gameState can be any game state -- Pacman's
+    position in that state is ignored.
+    This might be a useful helper function for your ApproximateSearchAgent.
+    """
+    x1, y1 = point1
+    x2, y2 = point2
+    walls = gameState.getWalls()
+    assert not walls[x1][y1], 'point1 is a wall: ' + str(point1)
+    assert not walls[x2][y2], 'point2 is a wall: ' + str(point2)
+    prob = PositionSearchProblem(gameState, start=point1, goal=point2, warn=False, visualize=False)
+    return len(search.bfs(prob))
+
